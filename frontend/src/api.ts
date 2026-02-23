@@ -13,6 +13,7 @@ export type DocumentItem = {
 
 const BASE_URL = "http://127.0.0.1:8000";
 
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${BASE_URL}${path}`, {
     headers: {
@@ -31,6 +32,10 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export function getUsers(): Promise<User[]> {
   return request<User[]>("/users");
+}
+
+export function getUser(userId: number): Promise<User> {
+  return request<User>(`/users/${userId}`);
 }
 
 export function createUser(payload: User): Promise<User> {
@@ -59,4 +64,8 @@ export function createDocument(payload: DocumentItem): Promise<DocumentItem> {
     method: "POST",
     body: JSON.stringify(payload)
   });
+}
+
+export function getDocument(docId: number): Promise<DocumentItem> {
+  return request<DocumentItem>(`/documents/${docId}`);
 }
