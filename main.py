@@ -3,11 +3,19 @@ from fastapi.responses import ORJSONResponse
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import Query
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from models import User, Document
 from database import init_db, get_session
 
 app = FastAPI(default_response_class=ORJSONResponse)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 init_db()
 
