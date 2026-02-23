@@ -48,8 +48,21 @@ def create_document(session: Session, document: Document) -> Document:
     return document
 
 
-def get_documents(session: Session) -> list[Document]:
+def get_documents(
+    session: Session,
+    skip: int = 0,
+    limit: int = 10,
+    title: str | None = None,
+    user_id: int | None = None,
+) -> list[Document]:
     statement = select(Document)
+
+    if title:
+        statement = statement.where(Document.title.contains(title))
+    if user_id is not None:
+        statement = statement.where(Document.user_id == user_id)
+
+    statement = statement.offset(skip).limit(limit)
     return session.exec(statement).all()
 
 

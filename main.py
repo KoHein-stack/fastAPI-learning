@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi import Depends
 from fastapi import HTTPException
+from fastapi import Query
 from sqlalchemy.orm import Session
-from sqlmodel import select
 from models import User, Document
 from database import init_db, get_session
 
@@ -62,10 +62,22 @@ def delete_user_route(user_id: int, session: Session = Depends(get_session)):
 
 
 @app.get("/documents")
-def read_documents(session: Session = Depends(get_session)):
+def read_documents(
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=10, ge=1, le=100),
+    title: str | None = Query(default=None),
+    user_id: int | None = Query(default=None, ge=1),
+    session: Session = Depends(get_session),
+):
     from crud import get_documents
 
-    documents = get_documents(session)
+    documents = get_documents(
+        session=session,
+        skip=skip,
+        limit=limit,
+        title=title,
+        user_id=user_id,
+    )
     return documents
 
 
